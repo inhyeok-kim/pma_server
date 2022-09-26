@@ -1,6 +1,6 @@
 import express from 'express';
 import { Project } from '../../dao/ProjectDao';
-import { getProjectListOfMember, registProject } from '../../service/ProjectService';
+import { getProject, getProjectList, getProjectListOfMember, registProject } from '../../service/ProjectService';
 import { jsonMessage } from '../../utils/ResponseUtil';
 
 const router = express.Router();
@@ -20,6 +20,16 @@ router.post('/',async (req,res)=>{
 
 router.get('/my',async (req,res)=>{
     const result = await getProjectListOfMember(res.locals.loginInfo.id);
+    if(result){
+        res.send(jsonMessage('0','success',result));
+    } else {
+        res.send(jsonMessage('E0','failed',{}));
+    }
+});
+
+router.get('/',async (req,res)=>{
+    const prId = req.query.prId;
+    const result = await getProject(prId as string);
     if(result){
         res.send(jsonMessage('0','success',result));
     } else {

@@ -123,3 +123,20 @@ const result = await list(db,`
 `);
 return result;
 }
+
+export async function selectProject(db:PoolConnection|Pool,prId:string){
+    const result = await select(db,`
+        SELECT p.PR_ID as prId,
+            PR_NAME as prName,
+            PR_DESCRIPTION as prDescription,
+            IS_PRIVATE as isPrivate,
+            START_DT as startDt,
+            END_DT as endDt,
+            REGISTER as register,
+            p.REGIST_TIME as registTime,
+            STATUS as status
+        FROM PROJECT p
+        WHERE PR_ID = '${prId}'
+    `);
+    return result;
+}

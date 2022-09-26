@@ -12,7 +12,7 @@ const app = express();
  * 세팅
  */
 app.use(cors({
-    origin:'http://localhost:3000',
+    origin:'http://192.168.123.48:3000',
     credentials : true
 }))
 app.use(express.static(path.join(__dirname,'public')));

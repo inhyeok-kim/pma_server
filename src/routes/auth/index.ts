@@ -1,6 +1,8 @@
 import express from 'express';
+import { Member } from '../../dao/MemberDao';
 import { login } from '../../service/AuthService';
-import {getToken} from '../../utils/JWTManage';
+import { getMember } from '../../service/MemberService';
+import {getToken, verify} from '../../utils/JWTManage';
 import { jsonMessage } from '../../utils/ResponseUtil';
 
 const router = express.Router();
@@ -18,6 +20,31 @@ router.post('/',async (req,res)=>{
         res.send(jsonMessage('E0','access approved'));
     } else {
         res.send(jsonMessage('E1','access denied'));
+    }
+});
+
+router.get('/',async (req,res)=>{
+    let flag = false;
+    if(req.cookies){
+        if(req.cookies.act){
+            const result = await verify(req.cookies.act)
+            if(result) {
+                const member : Member = {
+                    memId : Object.values(result)[0]
+                }
+                const login = await getMember(member);
+                if(login){
+                    flag = true;
+                }
+            }
+        }
+    }
+    if(flag){
+        res.send(jsonMessage('0','access approved'));
+        res.end();
+    } else {
+        res.send(jsonMessage('A1','Need Login'));
+        res.end();
     }
 });
 

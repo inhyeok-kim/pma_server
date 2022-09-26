@@ -1,5 +1,5 @@
 import { PoolConnection } from "mysql2";
-import { insertProject, insertProjectMember, Project, selectProjectList, selectProjectListOfMember } from "../dao/ProjectDao";
+import { insertProject, insertProjectMember, Project, selectProject, selectProjectList, selectProjectListOfMember } from "../dao/ProjectDao";
 import { makeSeq } from "../utils/SeqUtil";
 import { setTransaction } from "./Service";
 import db from '../database/mysql';
@@ -48,4 +48,9 @@ export async function getProjectList(project:Project){
 export async function getProjectListOfMember(memId:string){
     const list = await selectProjectListOfMember(db!,memId);
     return list;
+}
+
+export async function getProject(prId:string){
+    const result = await selectProject(db!,prId);
+    return result;
 }
