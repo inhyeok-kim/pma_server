@@ -15,7 +15,11 @@ export function select(db:Pool|PoolConnection,query:string){
                     `,rows);
                     resolve(false);
                 } else {
-                    resolve(rows[0]);
+                    if(rows.length === 0){
+                        resolve({});
+                    } else {
+                        resolve(rows[0]);
+                    }
                 }
             } else {
                 resolve(rows);

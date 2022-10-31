@@ -3,6 +3,8 @@ import { insertProject, insertProjectMember, Project, selectProject, selectProje
 import { makeSeq } from "../utils/SeqUtil";
 import { setTransaction } from "./Service";
 import db from '../database/mysql';
+import { registChatRoom } from "./ChatService";
+import { ChatRoom } from "../dao/ChatDao";
 
 export async function registProject(project : Project){
     let result = await setTransaction(async(conn : PoolConnection)=>{
@@ -14,15 +16,28 @@ export async function registProject(project : Project){
                 flag = false;
                 conn.rollback(()=>{});
                 conn.release();
-            }
-
-            for(let member of project.members!){
-                const _result = await insertProjectMember(conn!,project.prId!,member.memId!);
-                if(!_result){
-                    flag = false;
-                    conn.rollback(()=>{});
-                    conn.release();
-                    break;
+            } else {
+                for(let member of project.members!){
+                    const _result = await insertProjectMember(conn!,project.prId!,member.memId!);
+                    if(!_result){
+                        flag = false;
+                        conn.rollback(()=>{});
+                        conn.release();
+                        break;
+                    }
+                }
+                if(flag){
+                    const room : ChatRoom = {
+                        prId : project.prId,
+                        isDirect : 'N',
+                        membersId : project.members?.map(v=>v.memId!)
+                    }
+                    const _result = await registChatRoom(room);
+                    if(!_result){
+                        flag = false;
+                        conn.rollback(()=>{});
+                        conn.release();
+                    }
                 }
             }
         } catch (error) {

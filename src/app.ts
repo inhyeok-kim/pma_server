@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import fs from 'fs';
 import cors from 'cors';
 import JWTCheck from './middleware/JWTCheck';
+import webSocker from './socket';
 
 const app = express();
 
@@ -12,7 +13,7 @@ const app = express();
  * 세팅
  */
 app.use(cors({
-    origin:'http://192.168.123.48:3000',
+    origin:['http://localhost:3000','http://192.168.123.138:3000'],
     credentials : true
 }))
 app.use(express.static(path.join(__dirname,'public')));
@@ -37,6 +38,8 @@ app.get('/',(req,res)=>{
     res.send('hi');
 });
 
-app.listen(4000,()=>{
+
+const server = app.listen(4000,()=>{
 
 });
+webSocker(server);

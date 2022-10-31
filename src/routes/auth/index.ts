@@ -10,8 +10,8 @@ const router = express.Router();
 router.post('/',async (req,res)=>{
     const body = req.body;
 
-    const result = await login(body);
-    if(result){
+    const result :any = await login(body);
+    if(result.MEM_ID){
         const token = await getToken({id:body.id});
         res.cookie('act',token,{
             maxAge : new Date().setDate(new Date().getDate()+10),
